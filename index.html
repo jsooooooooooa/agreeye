@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Eye Animation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Endless Justification of Truth</title>
 
 <style>
   body {
@@ -11,9 +12,18 @@
     height: 100vh;
     overflow: hidden;
     font-family: monospace;
+    color: #2c1d15;
   }
 
-  /* 영상 영역 */
+  .hidden { display: none; }
+
+  /* ---------- PAGE 1 ---------- */
+  #page1 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
   #video-wrapper {
     position: absolute;
     top: 50%;
@@ -31,75 +41,201 @@
     max-height: 60vh;
   }
 
-  /* 텍스트 영역 (하단 고정) */
-  #text {
+  #morse {
     position: absolute;
-    bottom: 30vh;
+    bottom: 12vh;
     width: 100%;
     text-align: center;
-    font-size: 19px;
+    font-size: 18px;
     line-height: 1.8;
-    color: #2c1d15;
     white-space: pre-line;
+  }
+
+  #click {
+    margin-top: 24px;
+    opacity: 0.6;
+    cursor: pointer;
+  }
+
+  /* ---------- PAGE 2 ---------- */
+  #page2 {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #2c1d15;
+    text-align: center;
+  }
+
+  /* ---------- PAGE 3 ---------- */
+  #page3 {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+
+  .message {
+    margin-bottom: 8px;
+  }
+
+  #input-area {
+    display: flex;
+    gap: 8px;
+  }
+
+  input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    background: transparent;
+    border: 1px solid rgba(44,29,21,0.3);
+    color: #2c1d15;
+  }
+
+  input::placeholder {
+    color: #2c1d15;
+    opacity: 0.3;
+  }
+
+  button {
+    padding: 10px 16px;
+    font-size: 16px;
+    background: transparent;
+    border: 1px solid #2c1d15;
+    color: #2c1d15;
   }
 </style>
 </head>
 
 <body>
 
-<div id="video-wrapper">
-  <video
-    autoplay
-    loop
-    muted
-    playsinline
-    webkit-playsinline
-  >
-    <source src="eye.mp4" type="video/mp4">
-  </video>
+<!-- PAGE 1 -->
+<div id="page1">
+  <div id="video-wrapper">
+    <video autoplay loop muted playsinline webkit-playsinline>
+      <source src="eye.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div id="morse"></div>
 </div>
 
-<div id="text"></div>
+<!-- PAGE 2 -->
+<div id="page2" class="hidden"></div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="hidden">
+  <div id="messages"></div>
+  <div id="input-area">
+    <input id="input"
+      placeholder="의심되는 참, 믿고 싶은 거짓을 알려주세요.">
+    <button onclick="sendMessage()">전송</button>
+  </div>
+</div>
 
 <script>
-  const videoWrapper = document.getElementById("video-wrapper");
-  const textBox = document.getElementById("text");
+/* ---------- PAGE 1 ---------- */
+const morseLines = [
+  "- .... .",
+  ". -. -.. .-.. . ... ...",
+  ".--- ..- ... - .. ..-. .. -.-. .- - .. --- -.",
+  "--- ..-.",
+  "- .-. ..- - ...."
+];
 
-  const message = [
-    "- .... .",
-    ". -. -.. .-.. . ... ...",
-    ".--- ..- ... - .. ..-. .. -.-. .- - .. --- -.",
-    "--- ..-.",
-    "- .-. ..- - ...."
-  ];
+const morseBox = document.getElementById("morse");
+let l = 0, c = 0;
 
-  let line = 0;
-  let char = 0;
+setTimeout(() => {
+  document.getElementById("video-wrapper").classList.add("move-up");
+}, 2000);
 
-  // 영상 시작 후 2초 뒤에 위로 이동
-  setTimeout(() => {
-    videoWrapper.classList.add("move-up");
-  }, 2000);
+setTimeout(typeMorse, 4000);
 
-  // 영상 이동 후 2초 뒤에 타이핑 시작
-  setTimeout(() => {
-    typeLine();
-  }, 4000);
+function typeMorse() {
+  if (l >= morseLines.length) {
+    morseBox.innerHTML += "\n\n<span id='click'>click here</span>";
+    document.getElementById("click").onclick = goToPage2;
+    return;
+  }
+  if (c < morseLines[l].length) {
+    morseBox.innerHTML += morseLines[l][c++];
+    setTimeout(typeMorse, 80);
+  } else {
+    morseBox.innerHTML += "\n";
+    l++; c = 0;
+    setTimeout(typeMorse, 400);
+  }
+}
 
-  function typeLine() {
-    if (line >= message.length) return;
+/* ---------- PAGE 2 ---------- */
+function goToPage2() {
+  document.getElementById("page1").classList.add("hidden");
+  const page2 = document.getElementById("page2");
+  page2.classList.remove("hidden");
 
-    if (char < message[line].length) {
-      textBox.innerHTML += message[line][char];
-      char++;
-      setTimeout(typeLine, 80);
+  const title = "The Endless Justification of Truth";
+  let i = 0;
+
+  function typeTitle() {
+    if (i < title.length) {
+      page2.textContent += title[i++];
+      setTimeout(typeTitle, 80);
     } else {
-      textBox.innerHTML += "\n";
-      line++;
-      char = 0;
-      setTimeout(typeLine, 500);
+      setTimeout(() => {
+        page2.classList.add("hidden");
+        document.getElementById("page3").classList.remove("hidden");
+        loadMessages();
+      }, 2000);
     }
   }
+  typeTitle();
+}
+
+/* ---------- PAGE 3 (localStorage) ---------- */
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+
+input.addEventListener("focus", () => {
+  input.placeholder = "";
+});
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
+});
+
+function loadMessages() {
+  const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
+  messages.innerHTML = "";
+  saved.forEach(text => {
+    const div = document.createElement("div");
+    div.className = "message";
+    div.textContent = text;
+    messages.appendChild(div);
+  });
+}
+
+function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
+  saved.push(text);
+  localStorage.setItem("guestMessages", JSON.stringify(saved));
+
+  input.value = "";
+  loadMessages();
+}
 </script>
 
 </body>
