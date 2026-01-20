@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guestbook</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background-color: #ECE4CE;
+    height: 100vh;
+    box-sizing: border-box;
+    font-family: monospace;
+    color: #2c1d15;
+  }
+
+  #messages {
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+
+  .message {
+    margin-bottom: 8px;
+  }
+
+  #input-area {
+    display: flex;
+    gap: 8px;
+  }
+
+  input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    background: transparent;
+    border: 1px solid rgba(44,29,21,0.3);
+    color: #2c1d15;
+  }
+
+  input::placeholder {
+    color: #2c1d15;
+    opacity: 0.3;
+  }
+
+  button {
+    padding: 10px 16px;
+    font-size: 16px;
+    background: transparent;
+    border: 1px solid #2c1d15;
+    color: #2c1d15;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="messages"></div>
+
+<div id="input-area">
+  <input
+    id="input"
+    placeholder="의심되는 참, 믿고 싶은 거짓을 알려주세요."
+  >
+  <button onclick="sendMessage()">전송</button>
+</div>
+
+<script>
+  const input = document.getElementById("input");
+  const messages = document.getElementById("messages");
+
+  // 저장된 메시지 불러오기
+  function loadMessages() {
+    const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
+    messages.innerHTML = "";
+    saved.forEach(text => {
+      const div = document.createElement("div");
+      div.className = "message";
+      div.textContent = text;
+      messages.appendChild(div);
+    });
+  }
+
+  loadMessages();
+
+  // placeholder 클릭 시 제거
+  input.addEventListener("focus", () => {
+    input.placeholder = "";
+  });
+
+  // Enter 키 전송
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
+    saved.push(text);
+    localStorage.setItem("guestMessages", JSON.stringify(saved));
+
+    input.value = "";
+    loadMessages();
+  }
+</script>
+
+</body>
+</html>
