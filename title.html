@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Endless Justification of Truth</title>
+
+<style>
+  body {
+    margin: 0;
+    background-color: #ECE4CE;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    color: #2c1d15;
+  }
+
+  #title {
+    font-size: 19px;
+    text-align: center;
+    white-space: nowrap;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="title"></div>
+
+<script>
+  const text = "The Endless Justification of Truth";
+  const titleBox = document.getElementById("title");
+  let i = 0;
+
+  function typeTitle() {
+    if (i < text.length) {
+      titleBox.textContent += text[i];
+      i++;
+      setTimeout(typeTitle, 80);
+    } else {
+      // 타이핑 완료 후 2초 뒤 이동
+      setTimeout(() => {
+        window.location.href = "guestbook.html";
+      }, 2000);
+    }
+  }
+
+  typeTitle();
+</script>
+
+</body>
+</html>
