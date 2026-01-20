@@ -8,56 +8,61 @@
   body {
     margin: 0;
     background-color: #ECE4CE;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     overflow: hidden;
     font-family: monospace;
   }
 
-  video {
-    max-width: 90%;
-    max-height: 90%;
+  /* 영상 영역 */
+  #video-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     transition: transform 1.5s ease;
   }
 
-  /* 영상이 위로 올라간 상태 */
-  .move-up {
-    transform: translateY(-25vh);
+  #video-wrapper.move-up {
+    transform: translate(-50%, -80%);
   }
 
+  video {
+    max-width: 90vw;
+    max-height: 60vh;
+  }
+
+  /* 텍스트 영역 (하단 고정) */
   #text {
-    margin-top: 40px;
+    position: absolute;
+    bottom: 8vh;
+    width: 100%;
+    text-align: center;
     font-size: 16px;
     line-height: 1.8;
+    color: #2c1d15;
     white-space: pre-line;
-    opacity: 0;
-  }
-
-  .show-text {
-    opacity: 1;
   }
 </style>
 </head>
 
 <body>
 
-<video
-  id="eyeVideo"
-  autoplay
-  muted
-  playsinline
-  webkit-playsinline
->
-  <source src="eye.mp4" type="video/mp4">
-</video>
+<div id="video-wrapper">
+  <video
+    autoplay
+    loop
+    muted
+    playsinline
+    webkit-playsinline
+  >
+    <source src="eye.mp4" type="video/mp4">
+  </video>
+</div>
 
 <div id="text"></div>
 
 <script>
-  const video = document.getElementById("eyeVideo");
+  const videoWrapper = document.getElementById("video-wrapper");
   const textBox = document.getElementById("text");
 
   const message = [
@@ -71,13 +76,15 @@
   let line = 0;
   let char = 0;
 
-  video.addEventListener("ended", () => {
-    video.classList.add("move-up");
-    setTimeout(() => {
-      textBox.classList.add("show-text");
-      typeLine();
-    }, 1500);
-  });
+  // 영상 시작 후 2초 뒤에 위로 이동
+  setTimeout(() => {
+    videoWrapper.classList.add("move-up");
+  }, 2000);
+
+  // 영상 이동 후 2초 뒤에 타이핑 시작
+  setTimeout(() => {
+    typeLine();
+  }, 4000);
 
   function typeLine() {
     if (line >= message.length) return;
