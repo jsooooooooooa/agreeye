@@ -1,29 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Eye</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eye Animation</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: black;
-      width: 100%;
-      height: 100%;
+      background-color: #ECE4CE; /* 영상 배경과 동일한 미색 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
+
     video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 90%;
+      max-height: 90%;
     }
   </style>
 </head>
 <body>
-
-<video autoplay muted loop playsinline>
-  <source src="eye.mp4" type="video/mp4">
-</video>
-
+  <video autoplay loop muted playsinline>
+    <source src="eye.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </body>
 </html>
