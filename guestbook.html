@@ -121,18 +121,29 @@
       div.className = "message";
       div.textContent = child.val().text;
 
-      /* 📱 길게 눌러 삭제 */
-      let timer;
-      div.addEventListener("touchstart", () => {
-        timer = setTimeout(() => {
-          if (confirm("이 문장을 삭제할까요?")) {
-            remove(ref(db, "messages/" + child.key));
-          }
-        }, 800);
-      });
-      div.addEventListener("touchend", () => {
-        clearTimeout(timer);
-      });
+      /* 📱 세번 탭 삭제 */
+      let tapCount = 0;
+let tapTimer = null;
+
+div.addEventListener("touchend", () => {
+  tapCount++;
+
+  if (tapCount === 3) {
+    tapCount = 0;
+    clearTimeout(tapTimer);
+
+    if (confirm("delete")) {
+      remove(ref(db, "messages/" + child.key));
+    }
+    return;
+  }
+
+  // 일정 시간 안에 3번 안 누르면 리셋
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => {
+    tapCount = 0;
+  }, 700);
+});
 
       messages.appendChild(div);
     });
