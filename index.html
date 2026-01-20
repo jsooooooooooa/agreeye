@@ -1,33 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Eye Animation</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #ECE4CE; /* 영상 배경과 동일한 미색 */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<title>Eye Animation</title>
 
-    video {
-      max-width: 90%;
-      max-height: 90%;
-    }
-  </style>
+<style>
+  body {
+    margin: 0;
+    background-color: #ECE4CE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: monospace;
+  }
+
+  video {
+    max-width: 90%;
+    max-height: 90%;
+    transition: transform 1.5s ease;
+  }
+
+  /* 영상이 위로 올라간 상태 */
+  .move-up {
+    transform: translateY(-25vh);
+  }
+
+  #text {
+    margin-top: 40px;
+    font-size: 16px;
+    line-height: 1.8;
+    white-space: pre-line;
+    opacity: 0;
+  }
+
+  .show-text {
+    opacity: 1;
+  }
+</style>
 </head>
+
 <body>
+
 <video
+  id="eyeVideo"
   autoplay
-  loop
   muted
   playsinline
   webkit-playsinline
 >
   <source src="eye.mp4" type="video/mp4">
 </video>
+
+<div id="text"></div>
+
+<script>
+  const video = document.getElementById("eyeVideo");
+  const textBox = document.getElementById("text");
+
+  const message = [
+    "- .... .",
+    ". -. -.. .-.. . ... ...",
+    ".--- ..- ... - .. ..-. .. -.-. .- - .. --- -.",
+    "--- ..-.",
+    "- .-. ..- - ...."
+  ];
+
+  let line = 0;
+  let char = 0;
+
+  video.addEventListener("ended", () => {
+    video.classList.add("move-up");
+    setTimeout(() => {
+      textBox.classList.add("show-text");
+      typeLine();
+    }, 1500);
+  });
+
+  function typeLine() {
+    if (line >= message.length) return;
+
+    if (char < message[line].length) {
+      textBox.innerHTML += message[line][char];
+      char++;
+      setTimeout(typeLine, 80);
+    } else {
+      textBox.innerHTML += "\n";
+      line++;
+      char = 0;
+      setTimeout(typeLine, 500);
+    }
+  }
+</script>
+
 </body>
 </html>
