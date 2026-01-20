@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Endless Justification of Truth</title>
+<title>Eye Animation</title>
 
 <style>
   body {
@@ -12,24 +11,9 @@
     height: 100vh;
     overflow: hidden;
     font-family: monospace;
-    color: #2c1d15;
   }
 
-  .page {
-    position: absolute;
-    inset: 0;
-    display: none;
-  }
-
-  .active {
-    display: block;
-  }
-
-  /* ---------- PAGE 1 ---------- */
-  #page1 {
-    position: relative;
-  }
-
+  /* 영상 영역 */
   #video-wrapper {
     position: absolute;
     top: 50%;
@@ -47,207 +31,88 @@
     max-height: 60vh;
   }
 
-  #morse {
+  /* 텍스트 영역 (하단 고정) */
+  #text {
     position: absolute;
-    bottom: 12vh;
+    bottom: 28vh;
     width: 100%;
     text-align: center;
-    font-size: 18px;
+    font-size: 19px;
     line-height: 1.8;
+    color: #2c1d15;
     white-space: pre-line;
   }
 
   #click {
     margin-top: 24px;
-    opacity: 0.6;
     cursor: pointer;
-  }
-
-  /* ---------- PAGE 2 ---------- */
-  #page2 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 19px;
-    color: #2c1d15;
-    text-align: center;
-  }
-
-  /* ---------- PAGE 3 ---------- */
-  #page3 {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-
-  #messages {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 12px;
-  }
-
-  .message {
-    margin-bottom: 8px;
-  }
-
-  #input-area {
-    display: flex;
-    gap: 8px;
-  }
-
-  input {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    background: transparent;
-    border: 1px solid rgba(44,29,21,0.3);
-    color: #2c1d15;
-  }
-
-  input::placeholder {
-    color: #2c1d15;
-    opacity: 0.3;
-  }
-
-  button {
-    padding: 10px 16px;
-    font-size: 16px;
-    background: transparent;
-    border: 1px solid #2c1d15;
-    color: #2c1d15;
+    opacity: 0.6;
   }
 </style>
 </head>
 
 <body>
 
-<!-- PAGE 1 -->
-<div id="page1" class="page active">
-  <div id="video-wrapper">
-    <video autoplay loop muted playsinline webkit-playsinline>
-      <source src="eye.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div id="morse"></div>
+<div id="video-wrapper">
+  <video
+    autoplay
+    loop
+    muted
+    playsinline
+    webkit-playsinline
+  >
+    <source src="eye.mp4" type="video/mp4">
+  </video>
 </div>
 
-<!-- PAGE 2 -->
-<div id="page2" class="page"></div>
-
-<!-- PAGE 3 -->
-<div id="page3" class="page">
-  <div id="messages"></div>
-  <div id="input-area">
-    <input id="input"
-      placeholder="의심되는 참, 믿고 싶은 거짓을 알려주세요.">
-    <button onclick="sendMessage()">전송</button>
-  </div>
-</div>
+<div id="text"></div>
 
 <script>
-/* ---------- PAGE 1 ---------- */
-const morseLines = [
-  "- .... .",
-  ". -. -.. .-.. . ... ...",
-  ".--- ..- ... - .. ..-. .. -.-. .- - .. --- -.",
-  "--- ..-.",
-  "- .-. ..- - ...."
-];
+  const videoWrapper = document.getElementById("video-wrapper");
+  const textBox = document.getElementById("text");
 
-const morseBox = document.getElementById("morse");
-let l = 0, c = 0;
+  const message = [
+    "- .... .",
+    ". -. -.. .-.. . ... ...",
+    ".--- ..- ... - .. ..-. .. -.-. .- - .. --- -.",
+    "--- ..-.",
+    "- .-. ..- - ...."
+  ];
 
-setTimeout(() => {
-  document.getElementById("video-wrapper").classList.add("move-up");
-}, 2000);
+  let line = 0;
+  let char = 0;
 
-setTimeout(typeMorse, 4000);
+  // 영상 시작 후 2초 뒤에 위로 이동
+  setTimeout(() => {
+    videoWrapper.classList.add("move-up");
+  }, 2000);
 
-function typeMorse() {
-  if (l >= morseLines.length) {
-    morseBox.innerHTML += "\n\n<span id='click'>click here</span>";
-    document.getElementById("click").onclick = goToPage2;
-    return;
-  }
-  if (c < morseLines[l].length) {
-    morseBox.innerHTML += morseLines[l][c++];
-    setTimeout(typeMorse, 80);
-  } else {
-    morseBox.innerHTML += "\n";
-    l++; c = 0;
-    setTimeout(typeMorse, 400);
-  }
-}
+  // 영상 이동 후 2초 뒤에 타이핑 시작
+  setTimeout(() => {
+    typeLine();
+  }, 4000);
 
-/* ---------- PAGE 2 ---------- */
-function goToPage2() {
-  switchPage("page2");
+  function typeLine() {
+    if (line >= message.length) {
+      // 모든 줄이 끝나면 click here 추가
+      textBox.innerHTML += "\n\n<span id='click'>click here</span>";
+      document.getElementById("click").onclick = () => {
+        window.location.href = "title.html";
+      };
+      return;
+    }
 
-  const page2 = document.getElementById("page2");
-  const title = "The Endless Justification of Truth";
-  let i = 0;
-
-  page2.textContent = "";
-
-  function typeTitle() {
-    if (i < title.length) {
-      page2.textContent += title[i++];
-      setTimeout(typeTitle, 80);
+    if (char < message[line].length) {
+      textBox.innerHTML += message[line][char];
+      char++;
+      setTimeout(typeLine, 80);
     } else {
-      setTimeout(goToPage3, 2000);
+      textBox.innerHTML += "\n";
+      line++;
+      char = 0;
+      setTimeout(typeLine, 500);
     }
   }
-  typeTitle();
-}
-
-/* ---------- PAGE 3 ---------- */
-function goToPage3() {
-  switchPage("page3");
-  loadMessages();
-}
-
-function switchPage(id) {
-  document.querySelectorAll(".page").forEach(p => {
-    p.classList.remove("active");
-  });
-  document.getElementById(id).classList.add("active");
-}
-
-/* ---------- GUESTBOOK (localStorage) ---------- */
-const input = document.getElementById("input");
-const messages = document.getElementById("messages");
-
-input.addEventListener("focus", () => {
-  input.placeholder = "";
-});
-
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
-});
-
-function loadMessages() {
-  const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
-  messages.innerHTML = "";
-  saved.forEach(text => {
-    const div = document.createElement("div");
-    div.className = "message";
-    div.textContent = text;
-    messages.appendChild(div);
-  });
-}
-
-function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  const saved = JSON.parse(localStorage.getItem("guestMessages")) || [];
-  saved.push(text);
-  localStorage.setItem("guestMessages", JSON.stringify(saved));
-
-  input.value = "";
-  loadMessages();
-}
 </script>
 
 </body>
