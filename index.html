@@ -34,7 +34,7 @@
   /* 텍스트 영역 (하단 고정) */
   #text {
     position: absolute;
-    bottom: 23vh;
+    bottom: 20vh;
     width: 100%;
     text-align: center;
     font-size: 19px;
@@ -105,7 +105,7 @@
     if (char < message[line].length) {
       textBox.innerHTML += message[line][char];
       char++;
-      setTimeout(typeLine, 80);
+      setTimeout(typeLine, 60);
     } else {
       textBox.innerHTML += "\n";
       line++;
