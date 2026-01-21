@@ -37,12 +37,12 @@
     if (i < text.length) {
       titleBox.textContent += text[i];
       i++;
-      setTimeout(typeTitle, 80);
+      setTimeout(typeTitle, 50);
     } else {
       // 타이핑 완료 후 2초 뒤 이동
       setTimeout(() => {
         window.location.href = "guestbook.html";
-      }, 2000);
+      }, 1000);
     }
   }
 
